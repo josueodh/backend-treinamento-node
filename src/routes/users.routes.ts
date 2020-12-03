@@ -33,28 +33,28 @@ usersRouter.post('/login', async (request, response) => {
 
         const usersRepository = getRepository(User);
 
-        const user = await usersRepository.findOne({ email });
+        const hasUser = await usersRepository.findOne({ email });
 
-        if (!user) {
+        if (!hasUser) {
             const createUser = new CreateUserService();
 
-            const user = await createUser.execute({
+            const newUser = await createUser.execute({
                 name, email, password
             })
-        } else {
-
-            const authenticateUser = new AuthenticateUserService();
-
-            const { user, token } = await authenticateUser.execute({
-                email,
-                password
-            });
-
         }
+
+        const authenticateUser = new AuthenticateUserService();
+
+        const { user, token } = await authenticateUser.execute({
+            email,
+            password
+        });
+
+
 
         delete user.password;
 
-        return response.status(200).json(user);
+        return response.status(200).json({ user, token });
 
     } catch (err) {
         return response.status(400).json({ error: err.message });
