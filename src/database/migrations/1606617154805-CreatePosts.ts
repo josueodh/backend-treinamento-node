@@ -21,10 +21,10 @@ export default class CreatePosts1606617154805 implements MigrationInterface {
                         name: 'title',
                         type: 'varchar',
                     }, {
-                        name: 'text',
+                        name: 'description',
                         type: 'text',
                     }, {
-                        name: 'image',
+                        name: 'imageUrl',
                         type: 'varchar',
                     }, {
                         name: 'created_at',

@@ -9,7 +9,7 @@ class Post {
     title: string;
 
     @Column('text')
-    text: string;
+    description: Text;
 
     @Column()
     user_id: string;
@@ -19,7 +19,7 @@ class Post {
     user: User;
 
     @Column()
-    image: string
+    imageUrl: string;
 
     @CreateDateColumn()
     created_at: Date;
