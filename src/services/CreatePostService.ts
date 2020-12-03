@@ -3,7 +3,7 @@ import Post from '../models/Post';
 
 interface Request {
     title: string;
-    description: Text;
+    description: string;
     user_id: string;
     imageUrl: string;
 }

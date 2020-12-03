@@ -27,6 +27,11 @@ export default class CreatePosts1606617154805 implements MigrationInterface {
                         name: 'imageUrl',
                         type: 'varchar',
                     }, {
+                        name: 'like',
+                        type: 'integer',
+                        default: 0,
+                    },
+                    {
                         name: 'created_at',
                         type: 'timestamp',
                         default: 'now()',

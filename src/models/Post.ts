@@ -9,7 +9,10 @@ class Post {
     title: string;
 
     @Column('text')
-    description: Text;
+    description: string;
+
+    @Column('integer')
+    like: number;
 
     @Column()
     user_id: string;
