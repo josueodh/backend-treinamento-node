@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
 export default class CreateUsers1606614643055 implements MigrationInterface {
 
@@ -25,6 +25,10 @@ export default class CreateUsers1606614643055 implements MigrationInterface {
                         name: 'password',
                         type: 'varchar',
                     }, {
+                        name: 'avatar',
+                        type: 'varchar',
+                        isNullable: true,
+                    }, {
                         name: 'created_at',
                         type: 'timestamp',
                         default: 'now()',
@@ -36,6 +40,7 @@ export default class CreateUsers1606614643055 implements MigrationInterface {
                 ]
             })
         )
+
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
