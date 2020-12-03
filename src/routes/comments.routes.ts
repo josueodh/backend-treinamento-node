@@ -12,12 +12,13 @@ interface Request {
 }
 
 commentsRouter.post('/', async (request, response) => {
-    const { user_id, post_id, text }: Request = request.body;
-
+    const { post_id, text }: Request = request.body;
     const commentRepository = getRepository(Comment);
 
     const comment = commentRepository.create({
-        post_id, user_id, text
+        post_id,
+        text,
+        user_id: request.user.id
     });
 
     await commentRepository.save(comment);
@@ -41,9 +42,12 @@ commentsRouter.put('/:id', async (request, response) => {
 
     const comment = await commentRepository.findOneOrFail(id);
 
-    comment.text = text;
+    if (comment.text) {
+        comment.text = text;
 
-    commentRepository.save(comment);
+        commentRepository.save(comment);
+    }
+
 
     return response.status(200).json(comment);
 });

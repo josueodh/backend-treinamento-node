@@ -25,6 +25,15 @@ export default class CreateComments1606963445625 implements MigrationInterface {
                     {
                         name: 'text',
                         type: 'text'
+                    },
+                    {
+                        name: 'created_at',
+                        type: 'timestamp',
+                        default: 'now()',
+                    }, {
+                        name: 'updated_at',
+                        type: 'timestamp',
+                        default: 'now()',
                     }
                 ]
             }))

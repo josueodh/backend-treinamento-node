@@ -24,11 +24,7 @@ class Comment {
     @JoinColumn({ name: 'post_id' })
     post: Post;
 
-    @CreateDateColumn()
-    created_at: Date;
 
-    @UpdateDateColumn()
-    updated_at: Date;
 }
 
 export default Comment;
