@@ -23,11 +23,11 @@ class UpdateUserService {
 
         if (avatar) {
             if (user.avatar) {
-                const userImageFilePath = path.join(uploadConfig.directory, post.imageUrl);
+                const userImageFilePath = path.join(uploadConfig.directory, user.avatar);
                 try {
                     const postImageFileExists = fs.promises.stat(userImageFilePath);
                     if (postImageFileExists) {
-                        await fs.promises.unlink(postImageFilePath);
+                        await fs.promises.unlink(userImageFilePath);
                     }
                 } catch (err) {
                     throw new Error('Error to remove the file');

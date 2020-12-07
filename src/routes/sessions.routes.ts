@@ -14,10 +14,12 @@ sessionsRouter.post('/', async (request, response) => {
             email,
             password
         });
-
-        delete user.password;
-
-        return response.status(200).json({ user, token });
+        const newUser = {
+            name: user.name,
+            avatar: user.avatar,
+            email: user.email,
+        }
+        return response.status(200).json({ newUser, token });
     } catch (err) {
         return response.status(400).json({ error: err.message });
     }

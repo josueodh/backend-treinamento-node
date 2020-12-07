@@ -25,9 +25,13 @@ usersRouter.post('/', async (request, response) => {
             password
         });
 
-        delete user.password;
+        const newUser = {
+            name: user.name,
+            avatar: user.avatar,
+            email: user.email,
+        }
 
-        return response.status(200).json(user);
+        return response.status(200).json(newUser);
     } catch (err) {
         return response.status(400).json({ error: err.message });
     }
@@ -45,10 +49,13 @@ usersRouter.put('/:id', ensureAuthenticated, upload.single('avatar'), async (req
         name,
         avatar: avatar
     });
+    const newUser = {
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+    }
 
-    delete user.password;
-
-    return response.status(200).json(user);
+    return response.status(200).json(newUser);
 
 
 });
@@ -77,9 +84,13 @@ usersRouter.post('/login', async (request, response) => {
 
 
 
-        delete user.password;
+        const newUser = {
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
+        }
 
-        return response.status(200).json({ user, token });
+        return response.status(200).json({ newUser, token });
 
     } catch (err) {
         return response.status(400).json({ error: err.message });
