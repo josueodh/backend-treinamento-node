@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const User_1 = __importDefault(require("./User"));
+const Comment_1 = __importDefault(require("./Comment"));
 let Post = class Post {
 };
 __decorate([
@@ -41,6 +42,10 @@ __decorate([
     typeorm_1.JoinColumn({ name: 'user_id' }),
     __metadata("design:type", User_1.default)
 ], Post.prototype, "user", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => Comment_1.default, comment => comment.post),
+    __metadata("design:type", Array)
+], Post.prototype, "comments", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)

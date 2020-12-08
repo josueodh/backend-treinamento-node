@@ -43,7 +43,7 @@ usersRouter.post('/', (request, response) => __awaiter(void 0, void 0, void 0, f
         return response.status(400).json({ error: err.message });
     }
 }));
-usersRouter.put('/:id', ensureAuthenticated_1.default, upload.single('avatar'), (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+usersRouter.put('/:id/image', ensureAuthenticated_1.default, upload.single('avatar'), (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { name } = request.body;
     const { id } = request.params;
     const updateUser = new UpdateUserService_1.default();
@@ -54,21 +54,58 @@ usersRouter.put('/:id', ensureAuthenticated_1.default, upload.single('avatar'), 
         avatar: avatar
     });
     const newUser = {
+        id: user.id,
         name: user.name,
         email: user.email,
         avatar: user.avatar,
     };
     return response.status(200).json(newUser);
 }));
+usersRouter.put('/:id', ensureAuthenticated_1.default, upload.single('avatar'), (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, avatar } = request.body;
+    const { id } = request.params;
+    const usersRepository = typeorm_1.getRepository(User_1.default);
+    const user = yield usersRepository.findOne(id);
+    if (user) {
+        if (name != null) {
+            user.name = name;
+        }
+        if (avatar == null) {
+            user.avatar = "https://secure.gravatar.com/avatar/84a92f9a532e6d110dc0056cd2377b09?s=96&d=mm&r=g";
+        }
+        else {
+            user.avatar = avatar;
+        }
+        usersRepository.save(user);
+        const newUser = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
+        };
+        return response.status(200).json(newUser);
+    }
+    return response.status(404).json('Not Found');
+}));
 usersRouter.post('/login', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, email, password } = request.body;
+        if (name == "") {
+            throw new Error("Name is required");
+        }
+        if (email == "") {
+            throw new Error("E-mail is required");
+        }
+        if (password == "") {
+            throw new Error("Password is required");
+        }
         const usersRepository = typeorm_1.getRepository(User_1.default);
         const hasUser = yield usersRepository.findOne({ email });
         if (!hasUser) {
             const createUser = new CreateUserService_1.default();
+            const avatar = "https://secure.gravatar.com/avatar/84a92f9a532e6d110dc0056cd2377b09?s=96&d=mm&r=g";
             const newUser = yield createUser.execute({
-                name, email, password
+                name, email, password, avatar
             });
         }
         const authenticateUser = new AuthenticateUserService_1.default();
@@ -77,6 +114,7 @@ usersRouter.post('/login', (request, response) => __awaiter(void 0, void 0, void
             password
         });
         const newUser = {
+            id: user.id,
             name: user.name,
             email: user.email,
             avatar: user.avatar,

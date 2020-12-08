@@ -7,11 +7,13 @@ const dotenv_1 = __importDefault(require("dotenv"));
 require("reflect-metadata");
 const express_1 = __importDefault(require("express"));
 const routes_1 = __importDefault(require("./routes"));
+const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 require("./database/index");
 const app = express_1.default();
+app.use(cors_1.default());
 app.use(express_1.default.json());
 app.use(routes_1.default);
-app.listen(3333, () => {
+app.listen(process.env.PORT || 3333, () => {
     console.log("Server started on port 3333");
 });

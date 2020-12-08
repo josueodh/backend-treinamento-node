@@ -37,7 +37,7 @@ usersRouter.post('/', async (request, response) => {
     }
 });
 
-usersRouter.put('/:id', ensureAuthenticated, upload.single('avatar'), async (request, response) => {
+usersRouter.put('/:id/image', ensureAuthenticated, upload.single('avatar'), async (request, response) => {
     const { name } = request.body;
     const { id } = request.params;
 
@@ -50,6 +50,7 @@ usersRouter.put('/:id', ensureAuthenticated, upload.single('avatar'), async (req
         avatar: avatar
     });
     const newUser = {
+        id: user.id,
         name: user.name,
         email: user.email,
         avatar: user.avatar,
@@ -59,20 +60,67 @@ usersRouter.put('/:id', ensureAuthenticated, upload.single('avatar'), async (req
 
 
 });
+
+usersRouter.put('/:id', ensureAuthenticated, upload.single('avatar'), async (request, response) => {
+    const { name, avatar } = request.body;
+    const { id } = request.params;
+
+    const usersRepository = getRepository(User);
+
+    const user = await usersRepository.findOne(id);
+    if (user) {
+
+        if (name != null) {
+            user.name = name;
+        }
+
+        if (avatar == null) {
+            user.avatar = "https://secure.gravatar.com/avatar/84a92f9a532e6d110dc0056cd2377b09?s=96&d=mm&r=g";
+        } else {
+            user.avatar = avatar;
+        }
+
+        usersRepository.save(user);
+
+        const newUser = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
+        }
+
+        return response.status(200).json(newUser);
+    }
+
+    return response.status(404).json('Not Found');
+
+
+});
 usersRouter.post('/login', async (request, response) => {
     try {
         const { name, email, password } = request.body;
 
+        if (name == "") {
+            throw new Error("Name is required");
+        }
+
+        if (email == "") {
+            throw new Error("E-mail is required");
+        }
+
+        if (password == "") {
+            throw new Error("Password is required");
+        }
         const usersRepository = getRepository(User);
 
         const hasUser = await usersRepository.findOne({ email });
 
         if (!hasUser) {
             const createUser = new CreateUserService();
-
+            const avatar = "https://secure.gravatar.com/avatar/84a92f9a532e6d110dc0056cd2377b09?s=96&d=mm&r=g";
             const newUser = await createUser.execute({
-                name, email, password
-            })
+                name, email, password, avatar
+            });
         }
 
         const authenticateUser = new AuthenticateUserService();
@@ -85,6 +133,7 @@ usersRouter.post('/login', async (request, response) => {
 
 
         const newUser = {
+            id: user.id,
             name: user.name,
             email: user.email,
             avatar: user.avatar,

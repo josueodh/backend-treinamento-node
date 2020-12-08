@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import User from './User';
+import Comment from './Comment';
 @Entity('posts')
 class Post {
     @PrimaryGeneratedColumn('uuid')
@@ -20,6 +21,9 @@ class Post {
     @ManyToOne(() => User)
     @JoinColumn({ name: 'user_id' })
     user: User;
+
+    @OneToMany(() => Comment, comment => comment.post)
+    comments: Comment[];
 
     @Column()
     imageUrl: string;

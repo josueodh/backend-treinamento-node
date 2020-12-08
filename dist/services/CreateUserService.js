@@ -16,7 +16,7 @@ const typeorm_1 = require("typeorm");
 const bcryptjs_1 = require("bcryptjs");
 const User_1 = __importDefault(require("../models/User"));
 class CreateUserService {
-    execute({ name, email, password }) {
+    execute({ name, email, password, avatar }) {
         return __awaiter(this, void 0, void 0, function* () {
             const usersReposity = typeorm_1.getRepository(User_1.default);
             const checkUserExists = yield usersReposity.findOne({
@@ -29,7 +29,8 @@ class CreateUserService {
             const user = usersReposity.create({
                 name,
                 email,
-                password: hashedPassword
+                password: hashedPassword,
+                avatar
             });
             yield usersReposity.save(user);
             return user;

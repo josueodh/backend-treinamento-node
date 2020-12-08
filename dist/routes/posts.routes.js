@@ -21,7 +21,7 @@ const CreatePostService_1 = __importDefault(require("../services/CreatePostServi
 const UpdatePostService_1 = __importDefault(require("../services/UpdatePostService"));
 const postsRouter = express_1.Router();
 const upload = multer_1.default(upload_1.default);
-postsRouter.post('/', upload.single('imageUrl'), (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+postsRouter.post('/image', upload.single('imageUrl'), (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, description } = request.body;
         const createPost = new CreatePostService_1.default();
@@ -37,10 +37,27 @@ postsRouter.post('/', upload.single('imageUrl'), (request, response) => __awaite
         return response.status(400).json({ error: err.message });
     }
 }));
+postsRouter.post('/', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { title, description, imageUrl } = request.body;
+        const postRepository = typeorm_1.getRepository(Post_1.default);
+        const post = postRepository.create({
+            title,
+            description,
+            user_id: request.user.id,
+            imageUrl,
+        });
+        yield postRepository.save(post);
+        return response.status(200).json(post);
+    }
+    catch (err) {
+        return response.status(400).json({ error: err.message });
+    }
+}));
 postsRouter.get('/', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const postRepository = typeorm_1.getRepository(Post_1.default);
-        const posts = yield postRepository.find();
+        const posts = yield postRepository.find({ relations: ["user", "comments"] });
         return response.status(200).json(posts);
     }
     catch (err) {

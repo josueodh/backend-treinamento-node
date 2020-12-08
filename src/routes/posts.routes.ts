@@ -11,7 +11,7 @@ const postsRouter = Router();
 const upload = multer(uploadConfig);
 
 
-postsRouter.post('/', upload.single('imageUrl'), async (request, response) => {
+postsRouter.post('/image', upload.single('imageUrl'), async (request, response) => {
     try {
         const { title, description } = request.body;
 
@@ -29,17 +29,36 @@ postsRouter.post('/', upload.single('imageUrl'), async (request, response) => {
         return response.status(400).json({ error: err.message });
     }
 });
-
-postsRouter.get('/', async (request, response) => {
+postsRouter.post('/', async (request, response) => {
     try {
+        const { title, description, imageUrl } = request.body;
+
         const postRepository = getRepository(Post);
-        const posts = await postRepository.find();
-        return response.status(200).json(posts);
+
+        const post = postRepository.create({
+            title,
+            description,
+            user_id: request.user.id,
+            imageUrl,
+        });
+
+        await postRepository.save(post);
+
+        return response.status(200).json(post);
     } catch (err) {
         return response.status(400).json({ error: err.message });
     }
 });
 
+postsRouter.get('/', async (request, response) => {
+    try {
+        const postRepository = getRepository(Post);
+        const posts = await postRepository.find({ relations: ["user", "comments"] });
+        return response.status(200).json(posts);
+    } catch (err) {
+        return response.status(400).json({ error: err.message });
+    }
+});
 postsRouter.get('/:id', async (request, response) => {
     const { id } = request.params;
 
